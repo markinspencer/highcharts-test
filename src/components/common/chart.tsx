@@ -1,7 +1,9 @@
 import React, { Component, RefObject } from "react";
-import Highcharts, { SeriesColumnOptions } from "highcharts";
+import Highcharts from "highcharts";
 
-export interface Props extends Highcharts.Options {}
+export interface Props {
+  chartOptions: Highcharts.Options;
+}
 
 export interface State {
   options: Highcharts.Options;
@@ -12,21 +14,26 @@ class Chart extends Component<Props, State> {
 
   constructor(props: Props) {
     super(props);
-    this.container = React.createRef<HTMLDivElement>();
-  }
 
-  state: State = {};
+    this.container = React.createRef<HTMLDivElement>();
+    const { chartOptions } = props;
+
+    this.state = {
+      options: chartOptions
+    };
+  }
 
   componentDidMount() {
     const { current: element } = this.container;
+    const { options } = this.state;
 
     if (element) {
-      Highcharts.chart(element, this.state.options as Highcharts.Options);
+      Highcharts.chart(element, options);
     }
   }
 
   render() {
-    return <div ref={this.container}></div>;
+    return <div style={{ height: 300, width: 300 }} ref={this.container}></div>;
   }
 }
 

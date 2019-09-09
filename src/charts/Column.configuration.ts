@@ -1,27 +1,44 @@
-import Highcharts, { SeriesColumnOptions } from "highcharts";
+export interface ColumnChartData {
+  series: string;
+  value: number;
+  category: number;
+}
 
-export const getColumnOptions = () => {
-  const options = Highcharts.defaultOptions;
+type DataPoint = [number | string, number];
 
-  options.chart = {
-    ...options.chart,
-    type: "column"
-  };
+export class ColumnConfiguration {
+  buildSeries(data: ColumnChartData[]): Highcharts.SeriesColumnOptions[] {
+    const lookup = data.reduce((lookup: any, item: ColumnChartData) => {
+      const { category, series: name, value } = item;
 
-  return {
+      if (!lookup[name]) {
+        lookup[name] = {
+          type: "column",
+          name,
+          data: []
+        };
+      }
+
+      const point: DataPoint = [category, value];
+      lookup[name].data.push(point);
+
+      return lookup;
+    }, {});
+
+    return Object.values(lookup);
+  }
+
+  defaultOptions = {
     chart: {
       type: "column"
     },
     title: {
-      text: "Stacked column chart"
-    },
-    xAxis: {
-      categories: ["Apples", "Oranges", "Pears", "Grapes", "Bananas"]
+      text: ""
     },
     yAxis: {
       min: 0,
       title: {
-        text: "Total fruit consumption"
+        text: ""
       },
       stackLabels: {
         enabled: true,
@@ -54,19 +71,6 @@ export const getColumnOptions = () => {
         }
       }
     },
-    series: [
-      {
-        name: "John",
-        data: [5, 3, 4, 7, 2]
-      },
-      {
-        name: "Jane",
-        data: [2, 2, 3, 2, 1]
-      },
-      {
-        name: "Joe",
-        data: [3, 4, 4, 2, 5]
-      }
-    ] as Array<SeriesColumnOptions>
+    series: [] as Highcharts.SeriesColumnOptions[]
   } as Highcharts.Options;
-};
+}
