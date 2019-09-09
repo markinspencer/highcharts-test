@@ -32,7 +32,7 @@ class Expense extends React.Component<Props, State> {
 
   render() {
     const { options } = this.state;
-    console.log(options);
+
     if (Object.keys(options).length < 1) {
       return <div> No Data to Display </div>;
     }
